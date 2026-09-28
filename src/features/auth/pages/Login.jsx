@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { 
   Mail, 
   Lock,
@@ -8,8 +8,9 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { FormInput } from "../components/FormInput.jsx";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useAuth } from "../hooks/useAuth.js";
+import { AuthContext } from "../contexts/auth.context.jsx";
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -20,6 +21,8 @@ function Login() {
   const [loginSuccess, setLoginSuccess] = useState(false);
 
   const { handleLogin } = useAuth();
+
+  const navigate = useNavigate();
 
   const validate = () => {
     const errs = {};
@@ -50,6 +53,8 @@ function Login() {
 
     setIsSubmitting(false);
     setLoginSuccess(true);
+
+    navigate("/");
   };
 
   return (
@@ -67,7 +72,6 @@ function Login() {
                 <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5 shrink-0" />
                 <div>
                     <span className="font-semibold block">Authentication Successful!</span>
-                    Redirecting to your dashboard...
                 </div>
                 </div>
             )}
