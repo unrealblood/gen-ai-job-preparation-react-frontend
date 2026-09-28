@@ -10,6 +10,7 @@ import {
   ArrowRight, 
   CheckCircle2
 } from 'lucide-react';
+import { useAuth } from "../hooks/useAuth.js";
 
 function Register() {
   const [fullName, setFullName] = useState('');
@@ -19,6 +20,8 @@ function Register() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registerSuccess, setRegisterSuccess] = useState(false);
+
+  const { handleRegister } = useAuth();
 
   // Dynamic password strength estimation
   const getPasswordStrength = (pass) => {
@@ -56,13 +59,14 @@ function Register() {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
     
     //call regiter-user api
+    await handleRegister({name: fullName, email, password});
 
     setIsSubmitting(false);
     setRegisterSuccess(true);

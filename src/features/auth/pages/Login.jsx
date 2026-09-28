@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { FormInput } from "../components/FormInput.jsx";
 import { Link } from "react-router";
+import { useAuth } from "../hooks/useAuth.js";
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -17,6 +18,8 @@ function Login() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
+
+  const { handleLogin } = useAuth();
 
   const validate = () => {
     const errs = {};
@@ -36,16 +39,17 @@ function Login() {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
     
     //api request here
+    await handleLogin({email, password});
 
     setIsSubmitting(false);
-      setLoginSuccess(true);
+    setLoginSuccess(true);
   };
 
   return (
