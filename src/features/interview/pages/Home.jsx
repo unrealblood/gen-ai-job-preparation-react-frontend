@@ -7,6 +7,7 @@ import {
 import { FormFileInput } from '../components/FormFileInput.jsx';
 import { FormTextArea } from '../components/FormTextArea.jsx';
 import { useNavigate } from 'react-router';
+import { useInterview } from '../hooks/useInterview.js';
 
 function Home() {
   const [selfDesc, setSelfDesc] = useState('');
@@ -14,9 +15,10 @@ function Home() {
   const [file, setFile] = useState(null);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
+
+  const { generateReport } = useInterview();
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
@@ -50,19 +52,17 @@ function Home() {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSuccess(true);
-    }, 1500);
+    
+    const data = await generateReport({selfDescription: selfDesc, jobDescription: jobDesc, resumeFile: file});
+
+    setIsSubmitting(false);
+
+    navigate(`/interview/${data._id}`);
   };
-  
-  if (success) {
-    navigate("/");
-  }
 
   return (
     <div className='min-h-screen flex justify-center items-center'>
