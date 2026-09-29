@@ -18,7 +18,15 @@ function Home() {
 
   const navigate = useNavigate();
 
-  const { generateReport } = useInterview();
+  const { generateReport, reports, loading } = useInterview();
+
+  if(loading || !reports) {
+    return (
+        <div className='loading-screen'>
+            <p className='text-center mt-4'>Loading...</p>
+        </div>
+    );
+  }
 
   const handleFileChange = (e) => {
     const selected = e.target.files[0];
@@ -65,12 +73,12 @@ function Home() {
   };
 
   return (
-    <div className='min-h-screen flex justify-center items-center'>
+    <div className='min-h-screen flex justify-center items-center flex-col mt-8'>
         <div className="border border-gray-200 w-[800px] p-4 mx-auto rounded-md shadow-md">
             <div className="w-full max-w-2xl mx-auto animate-fadeIn">
                 {/* Header */}
                 <div className="mb-8 border-b border-slate-100 pb-6 text-center sm:text-left">
-                    <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Create your custom Interview plan</h2>
+                    <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Create Your Custom Interview Plan</h2>
                     <p className="text-sm text-slate-500 mt-1.5 leading-relaxed">
                     Let our AI analyze the job requirements and your unique profile to build a winning strategy.
                     </p>
@@ -136,6 +144,22 @@ function Home() {
                 </form>
             </div>
         </div>
+
+        {reports.length > 0 && <div className='w-[800px] p-4 mx-auto mt-4'>
+          <h2 className='text-xl font-bold p-2'>My Recent Interview Plans</h2>
+
+          <div className='flex justify-start items-start flex-wrap gap-4'>
+            {reports.map((report) => (
+              <div key={report._id} className='bg-gray-200 p-4 border border-gray-200 shadow-md rounded-md cursor-pointer min-h-32 flex justify-center items-center' onClick={() => navigate(`/interview/${report._id}`)}>
+                <div>
+                  <h3>{report.title || 'Untitled Position'}</h3>
+                  
+                  <p className={``}>Match Score: <span className='font-bold'>{report.matchScore}%</span></p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>}
     </div>
   );
 }
