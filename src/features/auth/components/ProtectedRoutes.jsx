@@ -8,6 +8,10 @@ function ProtectedRoutes({children}) {
         return <p className="text-center mt-4">Loading...</p>
     }
 
+    if(!user) {
+        return <Navigate to="/auth/login" />;
+    }
+
     return (
         <>
             {children}
