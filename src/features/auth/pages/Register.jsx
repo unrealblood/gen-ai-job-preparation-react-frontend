@@ -88,7 +88,7 @@ function Register() {
 
   return (
     <div className="min-h-screen flex justify-center items-center">
-        <div className="border border-gray-200 w-[600px] p-4 mx-auto rounded-md shadow-md">
+        <div className="border border-gray-200 sm:w-[600px] w-[300px] p-4 mx-auto rounded-md shadow-md">
             {/*Header*/}
             <div className="mb-4 ">
                 <h1 className="text-center text-2xl font-bold">Register</h1>

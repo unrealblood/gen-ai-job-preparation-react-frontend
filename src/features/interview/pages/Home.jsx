@@ -129,13 +129,13 @@ function Home() {
 
   return (
     <div className='min-h-screen flex justify-center items-center flex-col mt-8'>
-        <div className='w-[800px] mx-auto mb-4 flex justify-end items-end flex-col gap-2'>
+        <div className='sm:w-[800px] w-[300px] mx-auto mb-4 flex justify-end items-end flex-col gap-2'>
           {logoutErrorMessage !== "" && <p className='text-red-500'>{logoutErrorMessage}</p>}
 
           <button type='button' onClick={handleLogoutClick} disabled={authLoading} className='cursor-pointer bg-red-500 text-white px-6 py-2 rounded-md'>Logout</button>
         </div>
 
-        <div className="border border-gray-200 w-[800px] p-4 mx-auto rounded-md shadow-md">
+        <div className="border border-gray-200 sm:w-[800px] w-[300px] p-4 mx-auto rounded-md shadow-md">
           <div className="w-full max-w-2xl mx-auto animate-fadeIn">
               {/* Header */}
               <div className="mb-8 border-b border-slate-100 pb-6 text-center sm:text-left">
@@ -210,14 +210,14 @@ function Home() {
           </div>
       </div>
 
-      {fetchReportsError !== "" && <div className='w-[800px] mx-auto mt-8'>
+      {fetchReportsError !== "" && <div className='sm:w-[800px] w-[300px] mx-auto mt-8'>
         <p className='text-red-500'>{fetchReportsError}</p>
       </div>}
 
-      {reports.length > 0 && <div className='w-[800px] mx-auto mt-8'>
-        <h2 className='text-xl font-bold pb-4'>My Recent Interview Plans</h2>
+      {reports.length > 0 && <div className='sm:w-[800px] w-[300px] mx-auto mt-8'>
+        <h2 className='text-xl font-bold pb-4 sm:text-left text-center'>My Recent Interview Plans</h2>
 
-        <div className='flex justify-start items-start flex-wrap gap-4'>
+        <div className='flex sm:justify-start sm:items-start sm:flex-row flex-col justify-center items-center flex-wrap gap-4 sm:pb-0 pb-4'>
           {reports.map((report) => (
             <div key={report._id} className='bg-gray-200 p-4 border border-gray-200 shadow-md rounded-md cursor-pointer min-h-32 flex justify-center items-center' onClick={() => navigate(`/interview/${report._id}`)}>
               <div>
