@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { 
   Mail, 
   Lock,
@@ -10,13 +10,13 @@ import {
 import { FormInput } from "../components/FormInput.jsx";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../hooks/useAuth.js";
-import { AuthContext } from "../contexts/auth.context.jsx";
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
 
@@ -44,17 +44,32 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    setErrorMessage("");
+
     if (!validate()) return;
 
     setIsSubmitting(true);
     
     //api request here
-    await handleLogin({email, password});
-
-    setIsSubmitting(false);
-    setLoginSuccess(true);
-
-    navigate("/");
+    try {
+      await handleLogin({email, password});
+      
+      setLoginSuccess(true);
+      navigate("/");
+    }
+    catch(err) {
+      if (err.status === 401) {
+        setErrorMessage("Invalid email or password.");
+      } else if (err.status === 500) {
+        setErrorMessage("Server error. Please try again later.");
+      } else {
+        setErrorMessage(err.message);
+      }
+    }
+    finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -68,11 +83,21 @@ function Login() {
 
             {/* Success Banner */}
             {loginSuccess && (
-                <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-start space-x-3 text-sm animate-fadeIn">
+              <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-start space-x-3 text-sm animate-fadeIn">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5 shrink-0" />
                 <div>
                     <span className="font-semibold block">Authentication Successful!</span>
                 </div>
+              </div>)
+            }
+
+            {/* Authentication Fail Banner */}
+            {errorMessage !== "" && (<div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 flex items-start space-x-3 text-sm animate-fadeIn">
+                  <CheckCircle2 className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />
+                  <div>
+                      <span className="font-semibold block">Authentication Failed!</span>
+                      <p>{errorMessage}</p>
+                  </div>
                 </div>
             )}
 

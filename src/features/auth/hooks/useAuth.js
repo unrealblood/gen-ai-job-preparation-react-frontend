@@ -9,11 +9,21 @@ export function useAuth() {
         setLoading(true);
 
         try {
-            const data = await registerUser({name, email, password});
-            console.log(data);
+            await registerUser({name, email, password});
         }
         catch(error) {
-            console.log(error);
+            const statusCode = error.response?.status;
+            
+            const message =
+            error.response?.data?.message ||
+            error.response?.data ||
+            error.message ||
+            "Login failed";
+
+            throw {
+                statusCode,
+                message,
+            };
         }
         finally {
             setLoading(false);
@@ -25,11 +35,24 @@ export function useAuth() {
 
         try {
             const data = await login({email, password});
-            setUser(data.user);
-            console.log(data);
+            
+            if(data.user) {
+                setUser(data.user);
+            }
         }
         catch(error) {
-            console.log(error);
+            const statusCode = error.response?.status;
+            
+            const message =
+            error.response?.data?.message ||
+            error.response?.data ||
+            error.message ||
+            "Login failed";
+
+            throw {
+                statusCode,
+                message,
+            };
         }
         finally {
             setLoading(false);

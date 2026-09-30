@@ -18,6 +18,7 @@ function Register() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registerSuccess, setRegisterSuccess] = useState(false);
 
@@ -61,15 +62,28 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    setErrorMessage("");
+
     if (!validate()) return;
 
     setIsSubmitting(true);
     
     //call regiter-user api
-    await handleRegister({name: fullName, email, password});
-
-    setIsSubmitting(false);
-    setRegisterSuccess(true);
+    try {
+        await handleRegister({name: fullName, email, password});
+        setRegisterSuccess(true);
+    }
+    catch(err) {
+      if (err.status === 500) {
+        setErrorMessage("Server error. Please try again later.");
+      } else {
+        setErrorMessage(err.message);
+      }
+    }
+    finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -84,11 +98,22 @@ function Register() {
             {/* Success Notification */}
             {registerSuccess && (
                 <div className="mb-6 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-start space-x-3 text-sm animate-fadeIn">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5 shrink-0" />
-                <div>
-                    <span className="font-semibold block">Account Created Successfully!</span>
-                    Welcome aboard, {fullName}!
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 mt-0.5 shrink-0" />
+                    <div>
+                        <span className="font-semibold block">Account Created Successfully!</span>
+                        Welcome aboard, {fullName}! You may now Login.
+                    </div>
                 </div>
+            )}
+
+            {/* Registeration Failed Notification */}
+            {errorMessage !== "" && (
+                <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 flex items-start space-x-3 text-sm animate-fadeIn">
+                    <CheckCircle2 className="w-5 h-5 text-red-600 mt-0.5 shrink-0" />
+                    <div>
+                        <span className="font-semibold block">Account Creation Failed!</span>
+                        <p>{errorMessage}</p>
+                    </div>
                 </div>
             )}
 
