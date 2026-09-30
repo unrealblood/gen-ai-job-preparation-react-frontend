@@ -53,7 +53,7 @@ function Interview() {
   // 1. Loading State
   if (loading) {
     return (
-      <div className="w-full min-h-[400px] flex items-center justify-center">
+      <div className="sm:w-full sm:min-h-[400px] w-[300px] flex items-center justify-center">
         <p className="text-slate-500 font-medium">Loading report...</p>
       </div>
     );
@@ -80,7 +80,7 @@ function Interview() {
   // 3. Null Check
   if (!report) {
     return (
-      <div className="w-full min-h-[400px] flex items-center justify-center">
+      <div className="sm:w-full sm:min-h-[400px] w-[300px] flex items-center justify-center">
         <p className="text-slate-500">No report available.</p>
       </div>
     );
