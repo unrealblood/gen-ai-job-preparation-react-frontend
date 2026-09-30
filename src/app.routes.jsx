@@ -24,7 +24,7 @@ export const router = createBrowserRouter([
         element: <ProtectedRoutes><Interview /></ProtectedRoutes>
     },
     {
-        path: "/*",
+        path: "*",
         element: <PageNotFound />
     }
 ]);

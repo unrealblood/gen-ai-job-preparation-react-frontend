@@ -22,7 +22,7 @@ export const generateInterviewReport = async ({ jobDescription, selfDescription,
         }
     });
 
-    return response.data;
+    return response?.data;
 
 }
 

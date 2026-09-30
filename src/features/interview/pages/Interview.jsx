@@ -15,12 +15,31 @@ import { useInterview } from '../hooks/useInterview.js';
 import { useParams } from 'react-router';
 
 function Interview() {
-  const { report, getReportById, loading } = useInterview();
+  const { report, getReportById, loading, error } = useInterview();
   const { interviewId } = useParams();
 
+  const [fetchError, setFetchError] = useState(null);
+
   useEffect(() => {
-    if(interviewId) {
-      getReportById(interviewId);
+    let isMounted = true;
+
+    async function fetchReport() {
+      try {
+        if(interviewId) {
+          await getReportById(interviewId);
+        }
+      }
+      catch(err) {
+        if (isMounted) {
+          setFetchError(err.message || "Failed to load report.");
+        }
+      }
+    }
+
+    fetchReport();
+
+    return () => {
+      isMounted = false;
     }
   }, [interviewId]);
 
@@ -31,11 +50,39 @@ function Interview() {
     setExpandedIndex(expandedIndex === idx ? null : idx);
   };
 
-  if (loading || !report) {
+  // 1. Loading State
+  if (loading) {
     return (
-        <div className='loading-screen'>
-            <p className='text-center mt-4'>Loading...</p>
-        </div>
+      <div className="w-full min-h-[400px] flex items-center justify-center">
+        <p className="text-slate-500 font-medium">Loading report...</p>
+      </div>
+    );
+  }
+
+  // 2. Error State
+  const displayError = fetchError || error?.message;
+  if (displayError) {
+    return (
+      <div className="w-full max-w-lg mx-auto my-12 p-6 bg-white border border-rose-200 rounded-2xl shadow-sm text-center">
+        <AlertTriangle className="w-10 h-10 text-rose-500 mx-auto mb-3" />
+        <h3 className="text-lg font-bold text-slate-900 mb-1">Unable to Load Report</h3>
+        <p className="text-sm text-slate-600 mb-4">{displayError}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition cursor-pointer"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  // 3. Null Check
+  if (!report) {
+    return (
+      <div className="w-full min-h-[400px] flex items-center justify-center">
+        <p className="text-slate-500">No report available.</p>
+      </div>
     );
   }
 
@@ -89,7 +136,7 @@ function Interview() {
         <div className="flex items-center space-x-2">
           <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
             <span className="w-2 h-2 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
-            Generated Interview Report Successfully
+            Report Ready!
           </span>
         </div>
       </div>

@@ -18,7 +18,7 @@ export function useAuth() {
             error.response?.data?.message ||
             error.response?.data ||
             error.message ||
-            "Login failed";
+            "Registration failed";
 
             throw {
                 statusCode,
@@ -36,8 +36,8 @@ export function useAuth() {
         try {
             const data = await login({email, password});
             
-            if(data.user) {
-                setUser(data.user);
+            if(data?.user) {
+                setUser(data?.user);
             }
         }
         catch(error) {
@@ -63,12 +63,22 @@ export function useAuth() {
         setLoading(true);
 
         try {
-            const data = await logout();
+            await logout();
             setUser(null);
-            console.log(data);
         }
         catch(error) {
-            console.log(error);
+            const statusCode = error.response?.status;
+            
+            const message =
+            error.response?.data?.message ||
+            error.response?.data ||
+            error.message ||
+            "Logout failed";
+
+            throw {
+                statusCode,
+                message,
+            };
         }
         finally {
             setLoading(false);
